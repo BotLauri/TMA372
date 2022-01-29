@@ -6,7 +6,8 @@ tic
 
 % Parameters. 
 f = @fcn;
-Th = [0, 1/4, 1/2, 3/4, 1];
+Th = [0, 1/6, 1/3, 1/2, 2/3, 5/6, 1];
+%Th = [0, 1/4, 1/2, 3/4, 1];
 syms x
 v = hatFunction(Th, x);
 
@@ -15,6 +16,9 @@ hold on
 for i = 1:(length(Th) - 2)
     fplot(v(i), [0 1])
 end
+title('Plot of the hat functions.')
+legend('\phi_1(x)', '\phi_2(x)', '\phi_3(x)', '\phi_4(x)', '\phi_5(x)')
+xlabel('x')
 hold off
 
 % Calculation of stiffness matrix and load vector. 
@@ -49,6 +53,16 @@ disp(un)
 
 toc
 
+%% Plot of the hat functions. 
+hold on
+fplot(x - x^3, [0 1])
+fplot(sum(un), [0 1])
+title('Plot of the exact solution, u(x), and the approximation cG(1), u_n(x).')
+legend('u(x)', 'u_n(x)')
+xlabel('x')
+hold off
+
+%% Functions.
 function f = fcn(x)
     f = 6*x;
 end
