@@ -1,4 +1,4 @@
-% cG(1) finite element approximation of the two-point BVP,
+% cG(2) finite element approximation of the two-point BVP,
 % {-u''(x) = f(x), 0 < x < 1.
 % {u(0) = u(1) = 0. 
 clear
@@ -9,9 +9,9 @@ f = @fcn;
 Th = [0, 1/6, 1/3, 1/2, 2/3, 5/6, 1];
 %Th = [0, 1/4, 1/2, 3/4, 1];
 syms x
-v = hatFunction(Th, x);
+lambda = lagrangePolynomial(Th, x);
 
-% Calculation of stiffness matrix and load vector. 
+% Calculation of stiffness matrix and load vector. FIX THESE! Formula?
 A = zeros(length(Th) - 2, length(Th) - 2);
 for i = 1:length(A)
     for j = 1:length(A)
@@ -38,18 +38,18 @@ end
 
 % Finally solve the matrix equation.
 xi = linsolve(A, b);
-un = xi'.*v;
-disp(un)
+un = xi'.*lambda;
+disp(lambda)
 
 toc
 
-%% Plot of the hat functions. 
+%% Plot of the Lagrange polynomials. 
 hold on
-for i = 1:(length(Th) - 2)
-    fplot(v(i), [0 1])
+for i = 1:length(Th)
+    fplot(lambda(i), [0 1])
 end
-title('Plot of the hat functions.')
-legend('\phi_1(x)', '\phi_2(x)', '\phi_3(x)', '\phi_4(x)', '\phi_5(x)')
+title('Plot of the Lagrange polynomials.')
+legend('\lambda_1(x)', '\lambda_2(x)', '\lambda_3(x)', '\lambda_4(x)', '\lambda_5(x)', '\lambda_6(x)', '\lambda_7(x)')
 xlabel('x')
 hold off
 
@@ -67,10 +67,16 @@ function f = fcn(x)
     f = 6*x;
 end
 
-function phi = hatFunction(Th, x)
-    phi = [];
-    for i = 1:(length(Th) - 2)
-        phi = [phi, triangularPulse(Th(i), (Th(i)+Th(i+2))/2, Th(i+2), x)];
+function lambda = lagrangePolynomial(Th, x)
+    lambda = []; q = length(Th);
+    for i = 1:q
+        temp = 1;
+        for j = 1:q
+            if (i ~= j)
+                temp = temp * (x - Th(j))/(Th(i) - Th(j));
+            end
+        end
+        lambda = [lambda, temp];
     end
 end
  
