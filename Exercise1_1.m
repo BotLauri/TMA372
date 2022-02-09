@@ -12,35 +12,22 @@ syms x
 v = HatFunction(Th, x);
 
 % Calculation of stiffness matrix and load vector. 
-A = zeros(length(Th) - 2, length(Th) - 2);
+A = zeros(length(Th)-2, length(Th)-2);
+vDiff = diff(v);
 for i = 1:length(A)
     for j = 1:length(A)
-        if abs(i - j) < 2
-            if (i == j)
-                h1 = Th(i+1) - Th(i);
-                h2 = Th(i+2) - Th(i+1);
-                A(i,j) = 1/h1 + 1/h2;
-            else
-                h2 = Th(i+1) - Th(i);
-                A(i,j) = -1/h2;
-            end
-        end
+        A(i,j) = int(vDiff(i)*vDiff(j), 0, Th(end));
     end
 end
-b = zeros(length(Th) - 2, 1);
-for i = 2:(length(b)+1)
-    hi = Th(i) - Th(i-1);
-    firstTerm = int(f(x)*(x - Th(i-1))/hi, Th(i-1), Th(i));
-    hiPlusOne = Th(i+1) - Th(i);
-    secondTerm = int(f(x)*(Th(i+1) - x)/hiPlusOne, Th(i), Th(i+1));
-    b(i-1) = firstTerm + secondTerm;
+b = zeros(length(Th)-2, 1);
+for i = 1:length(b)
+    b(i) = int(f(x)*v(i), 0, Th(end));
 end
 
 % Finally solve the matrix equation.
 xi = linsolve(A, b);
 un = xi'.*v;
 disp(un)
-
 toc
 
 %% Plot of the hat functions. 
