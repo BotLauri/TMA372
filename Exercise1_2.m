@@ -7,7 +7,7 @@ tic
 % Parameters. 
 f = @fcn;
 Th = [0, 1/6, 1/3, 1/2, 2/3, 5/6, 1];
-%Th = [0, 1/4, 1/2, 3/4, 1];
+%Th = linspace(0, 1, 11); % Should be odd.
 syms x
 lambda = LagrangePolynomial(Th, x);
 
@@ -44,8 +44,8 @@ hold off
 
 %% Plot of the solution and the cG(2) approximation. 
 hold on
-fplot(x - x^3, [0 1])
-fplot(sum(un), [0 1])
+fplot(x - x^3, [0 1], 'LineStyle', '-')
+fplot(sum(un), [0 1], 'LineStyle', '--')
 title('Plot of the exact solution, u(x), and the approximation cG(2), u_n(x).')
 legend('u(x)', 'u_n(x)')
 xlabel('x')
